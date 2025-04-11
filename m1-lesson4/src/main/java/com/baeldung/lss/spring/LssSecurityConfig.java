@@ -37,7 +37,12 @@ public class LssSecurityConfig {
         .authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/delete/**").hasRole("ADMIN")
                 .anyRequest().authenticated())
-        .formLogin(Customizer.withDefaults());
+
+        .formLogin((formLoginCustomizer) -> formLoginCustomizer
+            .loginPage("/login").permitAll()
+            .loginProcessingUrl("/doLogin")
+        );
+
         return http.build();
     } // @formatter:on
 
