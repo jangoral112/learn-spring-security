@@ -6,8 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 @Configuration
@@ -33,14 +35,21 @@ public class LssSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {// @formatter:off
         http
-        .authorizeHttpRequests((requests) -> requests
+            .authorizeHttpRequests((requests) -> requests
+                .requestMatchers("/delete/**").hasRole("ADMIN")
                 .anyRequest().authenticated())
 
-        .formLogin((form) -> form
+            .formLogin((formLoginCustomizer) -> formLoginCustomizer
                 .loginPage("/login").permitAll()
-                .loginProcessingUrl("/doLogin"))
+                .loginProcessingUrl("/doLogin")
+            )
 
-        .csrf((csrf) -> csrf.disable());
+            .logout(logoutCustomizer -> logoutCustomizer
+                .permitAll().logoutRequestMatcher(new AntPathRequestMatcher("/doLogout", "POST"))
+            )
+
+            .csrf(AbstractHttpConfigurer::disable);
+
         return http.build();
     } // @formatter:on
 
