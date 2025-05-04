@@ -1,0 +1,4 @@
+- Check how Authentication token looks like in guts of security
+- Check if there is any Authentication token in case of login/password. Is it some internal object that also contains this information?
+- Authentication Object vs Authentication Token
+- https://docs.spring.io/spring-security/reference/servlet/architecture.html
